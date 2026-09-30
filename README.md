@@ -146,7 +146,7 @@ All endpoints except `GET /health` and `GET /dashboard` require `Authorization: 
 
 | Method | Path | Notes |
 |---|---|---|
-| `GET` | `/dashboard` | Dark operator UI: inboxes, in/out counts, 14-day bar chart. Optional `DASHBOARD_SOURCES` (comma-separated Worker origins) combines several deployments; paste each `API_KEY` on the page (`sessionStorage`). |
+| `GET` | `/dashboard` | Dark operator UI: inboxes, in/out counts, 14-day bar chart. Optional `DASHBOARD_SOURCES` (comma-separated Worker origins) combines several deployments; paste each `API_KEY` on the page (`localStorage`, shared across tabs). |
 | `GET` | `/stats` | `{ domains, inboxes: [{ address, inbound, outbound, last_message_at }], totals }`. CORS enabled for the combined dashboard. |
 | `GET` | `/stats/daily?days=14` | `{ days, buckets: [{ day, inbound, outbound }] }` UTC days, zero-filled. |
 

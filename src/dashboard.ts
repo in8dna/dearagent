@@ -209,7 +209,7 @@ export const DASHBOARD_HTML = `<!DOCTYPE html>
     <section class="page" id="page-domains"><table><thead><tr><th>Domain</th><th>Grain</th><th>Status</th><th>Inboxes</th></tr></thead><tbody id="tb-domains"></tbody></table></section>
     <section class="page" id="page-keys">
       <h1>Keys</h1>
-      <p class="crumb" style="margin-top:0">One Bearer token per Worker. Stored in this browser session only.</p>
+      <p class="crumb" style="margin-top:0">One Bearer token per Worker. Stored in this browser (localStorage) so new tabs keep them.</p>
       <form id="gate"></form>
     </section>
   </main>
@@ -225,8 +225,19 @@ function grainName(url) {
   const m = /^dearagent(?:-([a-z0-9]+))?\\./.exec(h);
   return (m && m[1]) ? m[1] : 'arnie';
 }
-function keys() { try { return JSON.parse(sessionStorage.getItem(STORE) || '{}'); } catch { return {}; } }
-function saveKeys(map) { sessionStorage.setItem(STORE, JSON.stringify(map)); }
+function keys() {
+  try {
+    const local = JSON.parse(localStorage.getItem(STORE) || '{}');
+    if (local && Object.keys(local).length) return local;
+    const sess = JSON.parse(sessionStorage.getItem(STORE) || '{}');
+    if (sess && Object.keys(sess).length) {
+      localStorage.setItem(STORE, JSON.stringify(sess));
+      return sess;
+    }
+    return {};
+  } catch { return {}; }
+}
+function saveKeys(map) { localStorage.setItem(STORE, JSON.stringify(map)); }
 function showErr(m) { err.hidden = !m; err.textContent = m || ''; }
 function escapeHtml(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function drawGate() {
